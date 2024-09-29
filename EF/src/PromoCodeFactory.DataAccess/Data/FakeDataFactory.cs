@@ -17,6 +17,7 @@ namespace PromoCodeFactory.DataAccess.Data
                 FirstName = "Иван",
                 LastName = "Сергеев",
                 Role = Roles.FirstOrDefault(x => x.Name == "Admin"),
+                RoleId = Roles.FirstOrDefault(x => x.Name == "Admin").Id,
                 AppliedPromocodesCount = 5
             },
             new Employee()
@@ -26,44 +27,57 @@ namespace PromoCodeFactory.DataAccess.Data
                 FirstName = "Петр",
                 LastName = "Андреев",
                 Role = Roles.FirstOrDefault(x => x.Name == "PartnerManager"),
+                RoleId = Roles.FirstOrDefault(x => x.Name == "PartnerManager").Id,
                 AppliedPromocodesCount = 10
             },
         };
 
-        public static IEnumerable<Role> Roles => new List<Role>()
+        public static IEnumerable<Role> Roles
         {
-            new Role()
+            get
             {
-                Id = Guid.Parse("53729686-a368-4eeb-8bfa-cc69b6050d02"),
-                Name = "Admin",
-                Description = "Администратор",
-            },
-            new Role()
-            {
-                Id = Guid.Parse("b0ae7aac-5493-45cd-ad16-87426a5e7665"),
-                Name = "PartnerManager",
-                Description = "Партнерский менеджер"
+                return new List<Role>
+                {
+                    new Role()
+                    {
+                        Id = Guid.Parse("53729686-a368-4eeb-8bfa-cc69b6050d02"),
+                        Name = "Admin",
+                        Description = "Администратор",
+                    },
+                    new Role()
+                    {
+                        Id = Guid.Parse("b0ae7aac-5493-45cd-ad16-87426a5e7665"),
+                        Name = "PartnerManager",
+                        Description = "Партнерский менеджер"
+                    }
+                };
             }
-        };
+        }
 
-        public static IEnumerable<Preference> Preferences => new List<Preference>()
+        public static IEnumerable<Preference> Preferences
         {
-            new Preference()
+            get
             {
-                Id = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c"),
-                Name = "Театр",
-            },
-            new Preference()
-            {
-                Id = Guid.Parse("c4bda62e-fc74-4256-a956-4760b3858cbd"),
-                Name = "Семья",
-            },
-            new Preference()
-            {
-                Id = Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84"),
-                Name = "Дети",
+                return new List<Preference>
+                {
+                    new Preference()
+                    {
+                        Id = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c"),
+                        Name = "Театр",
+                    },
+                    new Preference()
+                    {
+                        Id = Guid.Parse("c4bda62e-fc74-4256-a956-4760b3858cbd"),
+                        Name = "Семья",
+                    },
+                    new Preference()
+                    {
+                        Id = Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84"),
+                        Name = "Дети",
+                    }
+                };
             }
-        };
+        }
 
         public static IEnumerable<Customer> Customers
         {
@@ -78,7 +92,19 @@ namespace PromoCodeFactory.DataAccess.Data
                         Email = "ivan_sergeev@mail.ru",
                         FirstName = "Иван",
                         LastName = "Петров",
-                        //TODO: Добавить предзаполненный список предпочтений
+                        Preferences = new List<CustomerPreference>()
+                        {
+                            new CustomerPreference()
+                            {
+                                CustomerId = customerId,
+                                PreferenceId = Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84")
+                            },
+                            new CustomerPreference()
+                            {
+                                CustomerId = customerId,
+                                PreferenceId = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c")
+                            }
+                        }
                     }
                 };
 

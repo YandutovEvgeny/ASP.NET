@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using PromoCodeFactory.DataAccess;
 using PromoCodeFactory.DataAccess.Data;
+using PromoCodeFactory.DataAccess.Data.Abstractions;
 using PromoCodeFactory.DataAccess.Repositories;
 
 namespace PromoCodeFactory.WebHost
@@ -17,14 +20,13 @@ namespace PromoCodeFactory.WebHost
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped(typeof(IRepository<Employee>), (x) =>
-                new InMemoryRepository<Employee>(FakeDataFactory.Employees));
-            services.AddScoped(typeof(IRepository<Role>), (x) =>
-                new InMemoryRepository<Role>(FakeDataFactory.Roles));
-            services.AddScoped(typeof(IRepository<Preference>), (x) =>
-                new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
-            services.AddScoped(typeof(IRepository<Customer>), (x) =>
-                new InMemoryRepository<Customer>(FakeDataFactory.Customers));
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlite("FileName=DataBase.sqlite");
+                options.UseLazyLoadingProxies();
+            });
 
             services.AddOpenApiDocument(options =>
             {
@@ -34,7 +36,7 @@ namespace PromoCodeFactory.WebHost
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -59,6 +61,8 @@ namespace PromoCodeFactory.WebHost
             {
                 endpoints.MapControllers();
             });
+
+            dbInitializer.Initialize();
         }
     }
 }
