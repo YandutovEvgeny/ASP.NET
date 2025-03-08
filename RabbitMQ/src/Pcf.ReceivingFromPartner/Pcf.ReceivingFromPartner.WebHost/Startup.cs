@@ -12,6 +12,8 @@ using Pcf.ReceivingFromPartner.DataAccess;
 using Pcf.ReceivingFromPartner.DataAccess.Repositories;
 using Pcf.ReceivingFromPartner.DataAccess.Data;
 using Pcf.ReceivingFromPartner.Integration;
+using Pcf.ReceivingFromPartner.WebHost.Extensions.ServicesExtensions;
+using Pcf.ReceivingFromPartner.Integration.RabbitMQ.Producer;
 
 namespace Pcf.ReceivingFromPartner.WebHost
 {
@@ -33,6 +35,8 @@ namespace Pcf.ReceivingFromPartner.WebHost
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<INotificationGateway, NotificationGateway>();
             services.AddScoped<IDbInitializer, EfDbInitializer>();
+
+            services.AddMassTransit(Configuration);
 
             services.AddHttpClient<IGivingPromoCodeToCustomerGateway, GivingPromoCodeToCustomerGateway>(c =>
             {
@@ -59,6 +63,8 @@ namespace Pcf.ReceivingFromPartner.WebHost
                 options.Title = "PromoCode Factory Receiving From Partner API Doc";
                 options.Version = "1.0";
             });
+
+            services.AddTransient(typeof(IRabbitMQProducer<>), typeof(RabbitMQProducer<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

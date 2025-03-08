@@ -12,6 +12,10 @@ using Pcf.GivingToCustomer.DataAccess.Data;
 using Pcf.GivingToCustomer.DataAccess;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
+using Pcf.GivingToCustomer.WebHost.Extensions.ServicesExtensions;
+using MassTransit;
+using Pcf.GivingToCustomer.Integration.RabbitMQ.Consumer;
+using Pcf.GivingToCustomer.WebHost.Models;
 
 namespace Pcf.GivingToCustomer.WebHost
 {
@@ -40,6 +44,10 @@ namespace Pcf.GivingToCustomer.WebHost
                 x.UseSnakeCaseNamingConvention();
                 x.UseLazyLoadingProxies();
             });
+
+            services.AddMassTransit(Configuration);
+            services.AddMassTransitHostedService();
+            services.AddTransient<IConsumer<GivePromoCodeRequest>, RabbitMQConsumer>();
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

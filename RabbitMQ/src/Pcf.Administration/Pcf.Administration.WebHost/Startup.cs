@@ -10,6 +10,10 @@ using Pcf.Administration.DataAccess.Repositories;
 using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using System;
+using Pcf.Administration.WebHost.Extensions.ServiceExtensions;
+using MassTransit;
+using Pcf.Administration.Integration.Models;
+using Pcf.Administration.Integration.RabbitMQ.Consumer;
 
 namespace Pcf.Administration.WebHost
 {
@@ -37,6 +41,9 @@ namespace Pcf.Administration.WebHost
                 x.UseSnakeCaseNamingConvention();
                 x.UseLazyLoadingProxies();
             });
+            services.AddMassTransit(Configuration);
+            services.AddMassTransitHostedService();
+            services.AddTransient<IConsumer<Message>, RabbitMQConsumer>();
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

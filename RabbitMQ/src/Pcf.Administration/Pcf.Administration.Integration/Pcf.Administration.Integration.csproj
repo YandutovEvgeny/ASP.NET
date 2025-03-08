@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pcf.GivingToCustomer.Core\Pcf.GivingToCustomer.Core.csproj" />
+      <ProjectReference Include="..\Pcf.Administration.Core\Pcf.Administration.Core.csproj" />
 	  <PackageReference Include="MassTransit" Version="8.3.7" />
 	  <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.7" />
     </ItemGroup>
